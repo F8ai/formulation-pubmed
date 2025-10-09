@@ -4,11 +4,15 @@ build:
   commands:
     build:
       - echo "Installing dependencies..."
+      - pip install --upgrade pip
       - pip install -r requirements.txt
+      - echo "Setting up DVC..."
+      - dvc init --no-scm
+      - dvc remote add -d storage s3://f8ai-data/formulation-data
       - echo "Build completed"
 run:
-  runtime-version: 3.9.16
-  command: python -m uvicorn src.app:app --host 0.0.0.0 --port 8000
+  runtime-version: 3.11.0
+  command: python -m uvicorn src.app:app --host 0.0.0.0 --port 8000 --workers 1
   network:
     port: 8000
     env: PORT
@@ -21,3 +25,5 @@ run:
       value: pubmed
     - name: LOG_LEVEL
       value: INFO
+    - name: DVC_REMOTE_URL
+      value: s3://f8ai-data/formulation-data
