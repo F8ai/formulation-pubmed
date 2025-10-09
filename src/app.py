@@ -18,6 +18,8 @@ import logging
 from .pubmed_scraper import PubMedScraper
 from .data_processor import DataProcessor
 from .storage_manager import StorageManager
+from .background_processor import BackgroundProcessor
+from .git_manager import GitManager
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -40,6 +42,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    """Start background processing on startup"""
+    global background_task
+    logger.info("Starting background processor")
+    background_task = asyncio.create_task(background_processor.start())
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Stop background processing on shutdown"""
+    global background_task
+    if background_task:
+        logger.info("Stopping background processor")
+        await background_processor.stop()
+        background_task.cancel()
+        try:
+            await background_task
+        except asyncio.CancelledError:
+            pass
+
 # Load search terms configuration
 with open("data/pubmed.json", "r") as f:
     config = json.load(f)
@@ -51,6 +73,13 @@ storage = StorageManager(
     data_dir=config["output_format"]["data_directory"],
     s3_bucket=config["output_format"]["s3_bucket"]
 )
+git_manager = GitManager()
+
+# Initialize background processor
+background_processor = BackgroundProcessor(config, storage)
+
+# Start background processing
+background_task = None
 
 class SearchRequest(BaseModel):
     category: Optional[str] = None
@@ -83,10 +112,16 @@ async def health_check():
         "components": {
             "scraper": "operational",
             "processor": "operational",
-            "storage": "operational"
+            "storage": "operational",
+            "background_processor": "operational" if background_processor.running else "stopped"
         },
         "timestamp": datetime.now().isoformat()
     }
+
+@app.get("/status")
+async def get_processor_status():
+    """Get background processor status"""
+    return background_processor.get_status()
 
 @app.get("/search-terms")
 async def get_search_terms():

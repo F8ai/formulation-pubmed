@@ -42,16 +42,22 @@ class StorageManager:
         """Ensure all required directories exist"""
         directories = [
             self.data_dir,
-            os.path.join(self.data_dir, "raw"),
-            os.path.join(self.data_dir, "processed"),
-            os.path.join(self.data_dir, "pdfs"),
-            os.path.join(self.data_dir, "texts"),
-            os.path.join(self.data_dir, "metadata"),
-            os.path.join(self.data_dir, "search_results")
+            os.path.join(self.data_dir, "search_results"),
+            os.path.join(self.data_dir, "index")
         ]
         
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
+    
+    def _ensure_pmid_directory(self, pmid: str):
+        """Ensure PMID-specific directory structure exists"""
+        pmid_dir = os.path.join(self.data_dir, "articles", pmid)
+        subdirs = ["metadata", "abstract", "fulltext", "pdf", "ocr", "images", "references"]
+        
+        for subdir in subdirs:
+            os.makedirs(os.path.join(pmid_dir, subdir), exist_ok=True)
+        
+        return pmid_dir
     
     async def store_results(self, search_id: str, results: List[Dict[str, Any]]) -> bool:
         """
@@ -193,7 +199,7 @@ class StorageManager:
     
     async def store_article_fulltext(self, pmid: str, fulltext_data: Dict[str, Any]) -> bool:
         """
-        Store full text data for an article
+        Store full text data for an article in PMID-specific directory
         
         Args:
             pmid: PubMed ID
@@ -203,43 +209,67 @@ class StorageManager:
             True if successful, False otherwise
         """
         try:
-            # Store text file
-            text_path = os.path.join(self.data_dir, "texts", f"{pmid}.txt")
-            with open(text_path, 'w', encoding='utf-8') as f:
+            # Ensure PMID directory exists
+            pmid_dir = self._ensure_pmid_directory(pmid)
+            
+            # Store full text
+            fulltext_path = os.path.join(pmid_dir, "fulltext", "content.txt")
+            with open(fulltext_path, 'w', encoding='utf-8') as f:
                 f.write(fulltext_data.get('full_text', ''))
             
-            # Store metadata
-            metadata_path = os.path.join(self.data_dir, "metadata", f"{pmid}.json")
+            # Store abstract separately
+            abstract_path = os.path.join(pmid_dir, "abstract", "content.txt")
+            with open(abstract_path, 'w', encoding='utf-8') as f:
+                f.write(fulltext_data.get('abstract', ''))
+            
+            # Store comprehensive metadata
             metadata = {
                 'pmid': pmid,
-                'source': fulltext_data.get('full_text_source', ''),
-                'pdf_path': fulltext_data.get('pdf_path', ''),
+                'title': fulltext_data.get('title', ''),
+                'authors': fulltext_data.get('authors', []),
+                'journal': fulltext_data.get('journal', ''),
+                'publication_date': fulltext_data.get('publication_date', ''),
+                'doi': fulltext_data.get('doi', ''),
+                'keywords': fulltext_data.get('keywords', []),
+                'mesh_terms': fulltext_data.get('mesh_terms', []),
+                'fulltext_source': fulltext_data.get('full_text_source', ''),
                 'download_timestamp': fulltext_data.get('download_timestamp', ''),
-                'text_length': len(fulltext_data.get('full_text', ''))
+                'text_length': len(fulltext_data.get('full_text', '')),
+                'relevance_score': fulltext_data.get('relevance_score', 0.0),
+                'formulation_relevance': fulltext_data.get('formulation_relevance', {}),
+                'cannabis_relevance': fulltext_data.get('cannabis_relevance', {}),
+                'extracted_entities': fulltext_data.get('extracted_entities', {}),
+                'key_phrases': fulltext_data.get('key_phrases', [])
             }
             
+            metadata_path = os.path.join(pmid_dir, "metadata", "article.json")
             with open(metadata_path, 'w') as f:
-                json.dump(metadata, f, indent=2)
+                json.dump(metadata, f, indent=2, ensure_ascii=False)
             
             # Store PDF if available
             if fulltext_data.get('pdf_path') and os.path.exists(fulltext_data['pdf_path']):
-                pdf_filename = f"{pmid}.pdf"
-                pdf_dest = os.path.join(self.data_dir, "pdfs", pdf_filename)
+                pdf_dest = os.path.join(pmid_dir, "pdf", "article.pdf")
                 
-                # Copy PDF to data directory
+                # Copy PDF to PMID directory
                 import shutil
                 shutil.copy2(fulltext_data['pdf_path'], pdf_dest)
                 
                 # Update metadata with new PDF path
                 metadata['pdf_path'] = pdf_dest
                 with open(metadata_path, 'w') as f:
-                    json.dump(metadata, f, indent=2)
+                    json.dump(metadata, f, indent=2, ensure_ascii=False)
+            
+            # Store references if available
+            if fulltext_data.get('references'):
+                refs_path = os.path.join(pmid_dir, "references", "references.json")
+                with open(refs_path, 'w') as f:
+                    json.dump(fulltext_data['references'], f, indent=2, ensure_ascii=False)
             
             # Upload to S3 if available
             if self.s3_available:
-                await self._upload_article_to_s3(pmid, text_path, metadata_path)
+                await self._upload_pmid_directory_to_s3(pmid, pmid_dir)
             
-            logger.info(f"Stored full text data for PMID {pmid}")
+            logger.info(f"Stored full text data for PMID {pmid} in directory structure")
             return True
             
         except Exception as e:
@@ -248,7 +278,7 @@ class StorageManager:
     
     async def get_article_fulltext(self, pmid: str) -> Optional[Dict[str, Any]]:
         """
-        Retrieve full text data for an article
+        Retrieve full text data for an article from PMID directory
         
         Args:
             pmid: PubMed ID
@@ -257,27 +287,43 @@ class StorageManager:
             Full text data dictionary or None if not found
         """
         try:
-            # Try local storage first
-            text_path = os.path.join(self.data_dir, "texts", f"{pmid}.txt")
-            metadata_path = os.path.join(self.data_dir, "metadata", f"{pmid}.json")
+            pmid_dir = os.path.join(self.data_dir, "articles", pmid)
             
-            if os.path.exists(text_path) and os.path.exists(metadata_path):
-                with open(text_path, 'r', encoding='utf-8') as f:
-                    full_text = f.read()
+            # Check if PMID directory exists locally
+            if os.path.exists(pmid_dir):
+                # Load full text
+                fulltext_path = os.path.join(pmid_dir, "fulltext", "content.txt")
+                abstract_path = os.path.join(pmid_dir, "abstract", "content.txt")
+                metadata_path = os.path.join(pmid_dir, "metadata", "article.json")
                 
-                with open(metadata_path, 'r') as f:
-                    metadata = json.load(f)
+                full_text = ""
+                abstract = ""
+                metadata = {}
+                
+                if os.path.exists(fulltext_path):
+                    with open(fulltext_path, 'r', encoding='utf-8') as f:
+                        full_text = f.read()
+                
+                if os.path.exists(abstract_path):
+                    with open(abstract_path, 'r', encoding='utf-8') as f:
+                        abstract = f.read()
+                
+                if os.path.exists(metadata_path):
+                    with open(metadata_path, 'r') as f:
+                        metadata = json.load(f)
                 
                 return {
                     'full_text': full_text,
-                    'full_text_source': metadata.get('source', ''),
+                    'abstract': abstract,
+                    'full_text_source': metadata.get('fulltext_source', ''),
                     'pdf_path': metadata.get('pdf_path', ''),
-                    'download_timestamp': metadata.get('download_timestamp', '')
+                    'download_timestamp': metadata.get('download_timestamp', ''),
+                    'metadata': metadata
                 }
             
             # Try S3 if local not found
             if self.s3_available:
-                return await self._download_article_from_s3(pmid)
+                return await self._download_pmid_directory_from_s3(pmid)
             
             return None
             
@@ -315,19 +361,62 @@ class StorageManager:
             logger.error(f"Error deleting from S3: {str(e)}")
             return False
     
-    async def _upload_article_to_s3(self, pmid: str, text_path: str, metadata_path: str):
-        """Upload article files to S3"""
+    async def _upload_pmid_directory_to_s3(self, pmid: str, pmid_dir: str):
+        """Upload entire PMID directory to S3"""
         try:
-            # Upload text file
-            text_key = f"{self.s3_prefix}/texts/{pmid}.txt"
-            await self._upload_to_s3(text_path, text_key)
+            import os
+            from pathlib import Path
             
-            # Upload metadata
-            metadata_key = f"{self.s3_prefix}/metadata/{pmid}.json"
-            await self._upload_to_s3(metadata_path, metadata_key)
+            # Walk through the PMID directory and upload all files
+            for root, dirs, files in os.walk(pmid_dir):
+                for file in files:
+                    local_path = os.path.join(root, file)
+                    # Calculate relative path from pmid_dir
+                    rel_path = os.path.relpath(local_path, pmid_dir)
+                    s3_key = f"{self.s3_prefix}/articles/{pmid}/{rel_path}"
+                    
+                    await self._upload_to_s3(local_path, s3_key)
+            
+            logger.info(f"Uploaded PMID {pmid} directory to S3")
             
         except Exception as e:
-            logger.error(f"Error uploading article {pmid} to S3: {str(e)}")
+            logger.error(f"Error uploading PMID directory {pmid} to S3: {str(e)}")
+    
+    async def _download_pmid_directory_from_s3(self, pmid: str) -> Optional[Dict[str, Any]]:
+        """Download PMID directory from S3"""
+        try:
+            pmid_dir = os.path.join(self.data_dir, "articles", pmid)
+            
+            # List all files in the S3 prefix for this PMID
+            prefix = f"{self.s3_prefix}/articles/{pmid}/"
+            
+            response = self.s3_client.list_objects_v2(
+                Bucket=self.s3_bucket,
+                Prefix=prefix
+            )
+            
+            if 'Contents' not in response:
+                return None
+            
+            # Download all files
+            for obj in response['Contents']:
+                s3_key = obj['Key']
+                # Calculate local path
+                rel_path = s3_key.replace(prefix, '')
+                local_path = os.path.join(pmid_dir, rel_path)
+                
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(local_path), exist_ok=True)
+                
+                # Download file
+                self.s3_client.download_file(self.s3_bucket, s3_key, local_path)
+            
+            # Now load the data as if it was local
+            return await self.get_article_fulltext(pmid)
+            
+        except Exception as e:
+            logger.error(f"Error downloading PMID directory {pmid} from S3: {str(e)}")
+            return None
     
     async def _download_article_from_s3(self, pmid: str) -> Optional[Dict[str, Any]]:
         """Download article files from S3"""

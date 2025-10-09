@@ -1,0 +1,23 @@
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
+      - echo "Build completed"
+run:
+  runtime-version: 3.9.16
+  command: python -m uvicorn src.app:app --host 0.0.0.0 --port 8000
+  network:
+    port: 8000
+    env: PORT
+  env:
+    - name: PYTHONPATH
+      value: .
+    - name: AWS_DEFAULT_REGION
+      value: us-east-1
+    - name: DATA_DIR
+      value: pubmed
+    - name: LOG_LEVEL
+      value: INFO

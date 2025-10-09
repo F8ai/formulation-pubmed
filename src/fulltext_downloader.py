@@ -37,14 +37,10 @@ class FullTextDownloader:
     
     def __init__(self, data_dir: str = "pubmed"):
         self.data_dir = data_dir
-        self.pdf_dir = os.path.join(data_dir, "pdfs")
-        self.text_dir = os.path.join(data_dir, "texts")
-        self.metadata_dir = os.path.join(data_dir, "metadata")
+        self.articles_dir = os.path.join(data_dir, "articles")
         
         # Create directories
-        os.makedirs(self.pdf_dir, exist_ok=True)
-        os.makedirs(self.text_dir, exist_ok=True)
-        os.makedirs(self.metadata_dir, exist_ok=True)
+        os.makedirs(self.articles_dir, exist_ok=True)
         
         # Initialize web driver for Sci-Hub
         self.driver = None
@@ -412,27 +408,67 @@ class FullTextDownloader:
         return '+AND+'.join(query_parts)
     
     async def _save_full_text(self, pmid: str, result: Dict):
-        """Save full text and metadata to files"""
+        """Save full text and metadata to PMID directory structure"""
         try:
-            # Save text file
-            text_file = os.path.join(self.text_dir, f"{pmid}.txt")
-            with open(text_file, 'w', encoding='utf-8') as f:
-                f.write(result['full_text'])
+            # Create PMID directory structure
+            pmid_dir = os.path.join(self.articles_dir, pmid)
+            subdirs = ["metadata", "abstract", "fulltext", "pdf", "ocr", "images", "references"]
             
-            # Save metadata
-            metadata_file = os.path.join(self.metadata_dir, f"{pmid}.json")
+            for subdir in subdirs:
+                os.makedirs(os.path.join(pmid_dir, subdir), exist_ok=True)
+            
+            # Save full text
+            fulltext_path = os.path.join(pmid_dir, "fulltext", "content.txt")
+            with open(fulltext_path, 'w', encoding='utf-8') as f:
+                f.write(result.get('full_text', ''))
+            
+            # Save abstract
+            abstract_path = os.path.join(pmid_dir, "abstract", "content.txt")
+            with open(abstract_path, 'w', encoding='utf-8') as f:
+                f.write(result.get('abstract', ''))
+            
+            # Save comprehensive metadata
             metadata = {
                 'pmid': pmid,
-                'source': result['full_text_source'],
-                'pdf_path': result.get('pdf_path', ''),
-                'download_timestamp': result['download_timestamp'],
-                'text_length': len(result['full_text'])
+                'title': result.get('title', ''),
+                'authors': result.get('authors', []),
+                'journal': result.get('journal', ''),
+                'publication_date': result.get('publication_date', ''),
+                'doi': result.get('doi', ''),
+                'keywords': result.get('keywords', []),
+                'mesh_terms': result.get('mesh_terms', []),
+                'fulltext_source': result.get('full_text_source', ''),
+                'download_timestamp': result.get('download_timestamp', ''),
+                'text_length': len(result.get('full_text', '')),
+                'relevance_score': result.get('relevance_score', 0.0),
+                'formulation_relevance': result.get('formulation_relevance', {}),
+                'cannabis_relevance': result.get('cannabis_relevance', {}),
+                'extracted_entities': result.get('extracted_entities', {}),
+                'key_phrases': result.get('key_phrases', [])
             }
             
-            with open(metadata_file, 'w') as f:
-                json.dump(metadata, f, indent=2)
+            metadata_path = os.path.join(pmid_dir, "metadata", "article.json")
+            with open(metadata_path, 'w') as f:
+                json.dump(metadata, f, indent=2, ensure_ascii=False)
             
-            logger.info(f"Saved full text for PMID {pmid}")
+            # Save PDF if available
+            if result.get('pdf_path') and os.path.exists(result['pdf_path']):
+                pdf_dest = os.path.join(pmid_dir, "pdf", "article.pdf")
+                import shutil
+                shutil.copy2(result['pdf_path'], pdf_dest)
+                metadata['pdf_path'] = pdf_dest
+                
+                # Update metadata with new PDF path
+                with open(metadata_path, 'w') as f:
+                    json.dump(metadata, f, indent=2, ensure_ascii=False)
+            
+            # Save references if available
+            if result.get('references'):
+                refs_path = os.path.join(pmid_dir, "references", "references.json")
+                with open(refs_path, 'w') as f:
+                    json.dump(result['references'], f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"Saved full text for PMID {pmid} in directory structure")
             
         except Exception as e:
             logger.error(f"Error saving full text for PMID {pmid}: {str(e)}")
