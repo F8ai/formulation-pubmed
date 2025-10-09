@@ -1,0 +1,120 @@
+{
+  "search_terms": {
+    "cannabis_formulation": [
+      "cannabis formulation",
+      "cannabinoid formulation",
+      "cannabis extract formulation",
+      "marijuana formulation",
+      "hemp formulation",
+      "CBD formulation",
+      "THC formulation"
+    ],
+    "extraction_methods": [
+      "cannabis extraction",
+      "CO2 extraction cannabis",
+      "ethanol extraction cannabis",
+      "hydrocarbon extraction cannabis",
+      "supercritical fluid extraction",
+      "cannabis distillation",
+      "cannabis purification"
+    ],
+    "terpenes": [
+      "cannabis terpenes",
+      "terpene profile cannabis",
+      "myrcene cannabis",
+      "limonene cannabis",
+      "pinene cannabis",
+      "linalool cannabis",
+      "caryophyllene cannabis"
+    ],
+    "cannabinoids": [
+      "cannabinoid analysis",
+      "cannabinoid quantification",
+      "THC analysis",
+      "CBD analysis",
+      "CBG analysis",
+      "CBN analysis",
+      "cannabinoid stability"
+    ],
+    "pharmaceutical_formulation": [
+      "cannabis pharmaceutical",
+      "cannabinoid drug delivery",
+      "cannabis dosage form",
+      "cannabinoid bioavailability",
+      "cannabis pharmacokinetics",
+      "cannabinoid metabolism"
+    ],
+    "stability_testing": [
+      "cannabis stability",
+      "cannabinoid stability",
+      "cannabis shelf life",
+      "cannabis degradation",
+      "cannabinoid degradation",
+      "cannabis storage"
+    ],
+    "analytical_methods": [
+      "cannabis analysis",
+      "cannabinoid analysis",
+      "HPLC cannabis",
+      "GC-MS cannabis",
+      "cannabis testing",
+      "cannabinoid quantification"
+    ],
+    "regulatory": [
+      "cannabis regulation",
+      "cannabinoid regulation",
+      "cannabis compliance",
+      "cannabis quality control",
+      "cannabis standards",
+      "cannabis GMP"
+    ]
+  },
+  "search_parameters": {
+    "date_range": {
+      "start_year": 2020,
+      "end_year": 2024
+    },
+    "max_results_per_term": 100,
+    "language": "English",
+    "article_types": [
+      "Journal Article",
+      "Review",
+      "Clinical Trial",
+      "Meta-Analysis"
+    ],
+    "exclude_terms": [
+      "recreational",
+      "abuse",
+      "addiction",
+      "withdrawal"
+    ]
+  },
+  "output_format": {
+    "fields": [
+      "pmid",
+      "title",
+      "abstract",
+      "authors",
+      "journal",
+      "publication_date",
+      "doi",
+      "keywords",
+      "mesh_terms",
+      "url",
+      "full_text",
+      "full_text_source",
+      "pdf_path"
+    ],
+    "include_full_text": true,
+    "include_references": true,
+    "data_directory": "data/pubmed",
+    "s3_bucket": "f8ai-data",
+    "s3_prefix": "formulation-data/pubmed"
+  },
+  "scheduling": {
+    "update_frequency": "weekly",
+    "batch_size": 50,
+    "retry_attempts": 3,
+    "delay_between_requests": 1.0
+  }
+}
