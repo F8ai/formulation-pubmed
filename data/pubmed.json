@@ -107,7 +107,7 @@
     ],
     "include_full_text": true,
     "include_references": true,
-    "data_directory": "data/pubmed",
+    "data_directory": "pubmed",
     "s3_bucket": "f8ai-data",
     "s3_prefix": "formulation-data/pubmed"
   },

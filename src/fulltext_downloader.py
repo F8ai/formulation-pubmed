@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 class FullTextDownloader:
     """Downloads full text articles from various sources"""
     
-    def __init__(self, data_dir: str = "data/pubmed"):
+    def __init__(self, data_dir: str = "pubmed"):
         self.data_dir = data_dir
         self.pdf_dir = os.path.join(data_dir, "pdfs")
         self.text_dir = os.path.join(data_dir, "texts")

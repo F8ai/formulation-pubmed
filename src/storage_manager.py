@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class StorageManager:
     """Manages data storage and retrieval with S3 support"""
     
-    def __init__(self, data_dir: str = "data/pubmed", s3_bucket: str = "f8ai-data"):
+    def __init__(self, data_dir: str = "pubmed", s3_bucket: str = "f8ai-data"):
         self.data_dir = data_dir
         self.s3_bucket = s3_bucket
         self.s3_prefix = "formulation-data/pubmed"
