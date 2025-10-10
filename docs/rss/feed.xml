@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Formulation PubMed Research Feed</title>
+    <description>Latest cannabis formulation research articles from PubMed</description>
+    <link>https://f8ai.github.io/formulation-pubmed/</link>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 10 Oct 2025 19:28:00 GMT</lastBuildDate>
+    <generator>Formulation PubMed Scraper</generator>
+    <atom:link href="https://f8ai.github.io/formulation-pubmed/" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Pharmacokinetics, Safety, and Tolerability of a Medicinal Cannabis Formulation in Patients with Chronic Non-cancer Pain on Long-Term High Dose Opioid Analgesia: A Pilot Study.</title>
+      <link>https://pubmed.ncbi.nlm.nih.gov/34921662/</link>
+      <description/>
+      <guid isPermaLink="false">pmid:34921662</guid>
+      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <author>Bonomo, Yvonne et al.</author>
+      <relevanceScore>0.5723809523809524</relevanceScore>
+    </item>
+    <item>
+      <title>Predictors of Response to Medical Cannabis for Chronic Pain: A Retrospective Review of Real-Time Observational Data.</title>
+      <link>https://pubmed.ncbi.nlm.nih.gov/39781554/</link>
+      <description/>
+      <guid isPermaLink="false">pmid:39781554</guid>
+      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <author>Giangregorio, Aidan et al.</author>
+      <relevanceScore>0.34444444444444444</relevanceScore>
+    </item>
+    <item>
+      <title>Cannabis with breast cancer treatment: propitious or pernicious?</title>
+      <link>https://pubmed.ncbi.nlm.nih.gov/35127309/</link>
+      <description/>
+      <guid isPermaLink="false">pmid:35127309</guid>
+      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <author>Schoeman, Recardia et al.</author>
+      <relevanceScore>0.5258426966292136</relevanceScore>
+    </item>
+    <item>
+      <title>Medicinal Cannabis for the Treatment of Chronic Refractory Pain: An Investigation of the Adverse Event Profile and Health-Related Quality of Life Impact of an Oral Formulation.</title>
+      <link>https://pubmed.ncbi.nlm.nih.gov/35950052/</link>
+      <description/>
+      <guid isPermaLink="false">pmid:35950052</guid>
+      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <author>Abelev, Sarah et al.</author>
+      <relevanceScore>0.48287841191067</relevanceScore>
+    </item>
+  </channel>
+</rss>
