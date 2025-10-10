@@ -1,0 +1,18 @@
+{
+  "pmid": "12345678",
+  "title": "Test Article",
+  "authors": [],
+  "journal": "",
+  "publication_date": "",
+  "doi": "",
+  "keywords": [],
+  "mesh_terms": [],
+  "fulltext_source": "test",
+  "download_timestamp": "2025-10-09T17:13:33.710119",
+  "text_length": 30,
+  "relevance_score": 0.0,
+  "formulation_relevance": {},
+  "cannabis_relevance": {},
+  "extracted_entities": {},
+  "key_phrases": []
+}

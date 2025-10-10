@@ -1,0 +1,56 @@
+{
+  "pmid": "35950052",
+  "title": "Medicinal Cannabis for the Treatment of Chronic Refractory Pain: An Investigation of the Adverse Event Profile and Health-Related Quality of Life Impact of an Oral Formulation.",
+  "authors": [
+    "Abelev, Sarah",
+    "Warne, Leon N",
+    "Benson, Melissa",
+    "Hardy, Mark",
+    "Nayee, Sunny",
+    "Barlow, John"
+  ],
+  "journal": "Medical cannabis and cannabinoids",
+  "publication_date": "2022-01-01",
+  "doi": "10.1159/000521492",
+  "keywords": [
+    "Adverse events",
+    "Cannabinoids",
+    "Improved pain impact",
+    "Improved pain intensity",
+    "Medicinal cannabis"
+  ],
+  "mesh_terms": [],
+  "url": "https://pubmed.ncbi.nlm.nih.gov/35950052/",
+  "relevance_score": 0.48287841191067,
+  "formulation_relevance": {
+    "indicators": {
+      "extraction_methods": 0,
+      "stability_testing": 0,
+      "analytical_methods": 0,
+      "pharmaceutical_aspects": 0
+    },
+    "total_indicators": 0,
+    "relevance_level": "low"
+  },
+  "cannabis_relevance": {
+    "indicators": {
+      "cannabinoids": 1,
+      "terpenes": 0,
+      "cannabis_plant": 5
+    },
+    "total_indicators": 6,
+    "relevance_level": "high"
+  },
+  "extracted_entities": {
+    "cannabinoids": [],
+    "terpenes": [],
+    "extraction_methods": [],
+    "analytical_methods": [],
+    "dosage_forms": []
+  },
+  "key_phrases": [
+    "cannabis formulation"
+  ],
+  "processing_stage": "metadata_abstract",
+  "processed_at": "2025-10-09T17:15:59.675815"
+}

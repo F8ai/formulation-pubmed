@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PubMed Data Browser - Formulation Research</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .article-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        .article-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #28a745;
+            transition: transform 0.2s ease;
+        }
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .article-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .article-meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .article-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .article-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9em;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s ease;
+        }
+        .article-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .stage-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+        .stage-metadata { background: #ffc107; color: #000; }
+        .stage-abstract { background: #17a2b8; color: white; }
+        .stage-fulltext { background: #fd7e14; color: white; }
+        .stage-ocr { background: #6f42c1; color: white; }
+        .stage-complete { background: #28a745; color: white; }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        .refresh-btn:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PubMed Data Browser</h1>
+            <p>Real-time cannabis formulation research articles from PubMed</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <h3>Total Articles</h3>
+                <div class="number" id="total-articles">-</div>
+                <div class="subtitle">PMID processed</div>
+            </div>
+            <div class="stat-card">
+                <h3>Complete Articles</h3>
+                <div class="number" id="complete-articles">-</div>
+                <div class="subtitle">Full processing</div>
+            </div>
+            <div class="stat-card">
+                <h3>With Abstracts</h3>
+                <div class="number" id="abstract-articles">-</div>
+                <div class="subtitle">Abstracts available</div>
+            </div>
+            <div class="stat-card">
+                <h3>With Full Text</h3>
+                <div class="number" id="fulltext-articles">-</div>
+                <div class="subtitle">Full text available</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>Articles</h2>
+                <button class="refresh-btn" onclick="loadArticles()">🔄 Refresh Data</button>
+                <div id="articles-container">
+                    <div class="loading">Loading articles...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load articles from the data
+        async function loadArticles() {
+            const container = document.getElementById('articles-container');
+            container.innerHTML = '<div class="loading">Loading articles...</div>';
+            
+            try {
+                // This would normally fetch from the actual data
+                // For now, we'll show a placeholder
+                const articles = await fetchArticles();
+                displayArticles(articles);
+                updateStats(articles);
+            } catch (error) {
+                container.innerHTML = `<div class="error">Error loading articles: ${error.message}</div>`;
+            }
+        }
+        
+        // Mock function to fetch articles (replace with actual API call)
+        async function fetchArticles() {
+            // This would be replaced with actual data fetching
+            return [
+                {
+                    pmid: "39781554",
+                    title: "Predictors of Response to Medical Cannabis for Chronic Pain: A Retrospective Review of Real-Time Observational Data",
+                    authors: ["Giangregorio, Aidan", "Wang, Li", "Sprague, Sheila", "Arbus, Michelle", "Busse, Jason W"],
+                    journal: "Cannabis (Albuquerque, N.M.)",
+                    publication_date: "2024-01-01",
+                    doi: "10.26828/cannabis/2024/000259",
+                    processing_stage: "metadata_abstract",
+                    relevance_score: 0.34
+                },
+                {
+                    pmid: "35950052",
+                    title: "Cannabis Formulation Research Article",
+                    authors: ["Author 1", "Author 2"],
+                    journal: "Journal of Cannabis Research",
+                    publication_date: "2023-12-15",
+                    doi: "10.1234/example",
+                    processing_stage: "metadata_abstract",
+                    relevance_score: 0.28
+                },
+                {
+                    pmid: "35127309",
+                    title: "Advanced Cannabis Extraction Methods",
+                    authors: ["Researcher A", "Researcher B"],
+                    journal: "Cannabis Science",
+                    publication_date: "2023-11-20",
+                    doi: "10.5678/example",
+                    processing_stage: "metadata_abstract",
+                    relevance_score: 0.42
+                }
+            ];
+        }
+        
+        function displayArticles(articles) {
+            const container = document.getElementById('articles-container');
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<div class="loading">No articles found. The microservice may still be processing data.</div>';
+                return;
+            }
+            
+            const articlesHtml = articles.map(article => `
+                <div class="article-card">
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-meta">
+                        <strong>PMID:</strong> ${article.pmid} | 
+                        <strong>Journal:</strong> ${article.journal} | 
+                        <strong>Date:</strong> ${article.publication_date}
+                    </div>
+                    <div class="article-meta">
+                        <strong>Authors:</strong> ${article.authors.join(', ')}
+                    </div>
+                    <div class="article-meta">
+                        <strong>DOI:</strong> ${article.doi}
+                    </div>
+                    <div class="article-meta">
+                        <span class="stage-badge stage-${article.processing_stage.replace('_', '')}">${article.processing_stage}</span>
+                        <strong>Relevance:</strong> ${(article.relevance_score * 100).toFixed(1)}%
+                    </div>
+                    <div class="article-links">
+                        <a href="articles/${article.pmid}/metadata/article.json" target="_blank">📄 Metadata</a>
+                        <a href="articles/${article.pmid}/abstract/content.txt" target="_blank">📝 Abstract</a>
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/${article.pmid}/" target="_blank">🔗 PubMed</a>
+                        <a href="https://doi.org/${article.doi}" target="_blank">🔗 DOI</a>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = articlesHtml;
+        }
+        
+        function updateStats(articles) {
+            const totalArticles = articles.length;
+            const completeArticles = articles.filter(a => a.processing_stage === 'complete').length;
+            const abstractArticles = articles.filter(a => a.processing_stage.includes('abstract')).length;
+            const fulltextArticles = articles.filter(a => a.processing_stage.includes('fulltext')).length;
+            
+            document.getElementById('total-articles').textContent = totalArticles;
+            document.getElementById('complete-articles').textContent = completeArticles;
+            document.getElementById('abstract-articles').textContent = abstractArticles;
+            document.getElementById('fulltext-articles').textContent = fulltextArticles;
+        }
+        
+        // Load articles on page load
+        document.addEventListener('DOMContentLoaded', loadArticles);
+        
+        // Auto-refresh every 5 minutes
+        setInterval(loadArticles, 300000);
+    </script>
+</body>
+</html>

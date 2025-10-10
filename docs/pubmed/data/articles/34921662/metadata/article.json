@@ -1,0 +1,66 @@
+{
+  "pmid": "34921662",
+  "title": "Pharmacokinetics, Safety, and Tolerability of a Medicinal Cannabis Formulation in Patients with Chronic Non-cancer Pain on Long-Term High Dose Opioid Analgesia: A Pilot Study.",
+  "authors": [
+    "Bonomo, Yvonne",
+    "Norman, Amanda",
+    "Collins, Lisa",
+    "O'Neill, Helen",
+    "Galettis, Peter",
+    "Trinca, Jane",
+    "Strauss, Nigel",
+    "Martin, Jennifer",
+    "Castle, David"
+  ],
+  "journal": "Pain and therapy",
+  "publication_date": "2022-Mar-01",
+  "doi": "10.1007/s40122-021-00344-y",
+  "keywords": [
+    "CBD",
+    "Chronic pain",
+    "Medicinal cannabis",
+    "Pharmacokinetics",
+    "Safety",
+    "THC"
+  ],
+  "mesh_terms": [],
+  "url": "https://pubmed.ncbi.nlm.nih.gov/34921662/",
+  "relevance_score": 0.5723809523809524,
+  "formulation_relevance": {
+    "indicators": {
+      "extraction_methods": 0,
+      "stability_testing": 0,
+      "analytical_methods": 0,
+      "pharmaceutical_aspects": 2
+    },
+    "total_indicators": 2,
+    "relevance_level": "medium"
+  },
+  "cannabis_relevance": {
+    "indicators": {
+      "cannabinoids": 5,
+      "terpenes": 0,
+      "cannabis_plant": 1
+    },
+    "total_indicators": 6,
+    "relevance_level": "high"
+  },
+  "extracted_entities": {
+    "cannabinoids": [
+      "THC",
+      "CBD",
+      "cannabidiol",
+      "tetrahydrocannabinol",
+      "cannabinol"
+    ],
+    "terpenes": [],
+    "extraction_methods": [],
+    "analytical_methods": [],
+    "dosage_forms": []
+  },
+  "key_phrases": [
+    "cannabis formulation"
+  ],
+  "processing_stage": "metadata_abstract",
+  "processed_at": "2025-10-09T17:15:59.677854"
+}

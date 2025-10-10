@@ -1,0 +1,54 @@
+{
+  "pmid": "39781554",
+  "title": "Predictors of Response to Medical Cannabis for Chronic Pain: A Retrospective Review of Real-Time Observational Data.",
+  "authors": [
+    "Giangregorio, Aidan",
+    "Wang, Li",
+    "Sprague, Sheila",
+    "Arbus, Michelle",
+    "Busse, Jason W"
+  ],
+  "journal": "Cannabis (Albuquerque, N.M.)",
+  "publication_date": "2024-01-01",
+  "doi": "10.26828/cannabis/2024/000259",
+  "keywords": [
+    "Strainprint",
+    "cannabis",
+    "chronic pain",
+    "cohort",
+    "marijuana",
+    "mobile application"
+  ],
+  "mesh_terms": [],
+  "url": "https://pubmed.ncbi.nlm.nih.gov/39781554/",
+  "relevance_score": 0.34444444444444444,
+  "formulation_relevance": {
+    "indicators": {
+      "extraction_methods": 0,
+      "stability_testing": 0,
+      "analytical_methods": 0,
+      "pharmaceutical_aspects": 0
+    },
+    "total_indicators": 0,
+    "relevance_level": "low"
+  },
+  "cannabis_relevance": {
+    "indicators": {
+      "cannabinoids": 0,
+      "terpenes": 0,
+      "cannabis_plant": 4
+    },
+    "total_indicators": 4,
+    "relevance_level": "medium"
+  },
+  "extracted_entities": {
+    "cannabinoids": [],
+    "terpenes": [],
+    "extraction_methods": [],
+    "analytical_methods": [],
+    "dosage_forms": []
+  },
+  "key_phrases": [],
+  "processing_stage": "metadata_abstract",
+  "processed_at": "2025-10-09T17:15:59.677220"
+}

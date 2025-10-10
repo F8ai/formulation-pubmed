@@ -1,0 +1,54 @@
+{
+  "pmid": "35127309",
+  "title": "Cannabis with breast cancer treatment: propitious or pernicious?",
+  "authors": [
+    "Schoeman, Recardia",
+    "de la Harpe, Amy",
+    "Beukes, Natasha",
+    "Frost, Carminita L"
+  ],
+  "journal": "3 Biotech",
+  "publication_date": "2022-Feb-01",
+  "doi": "10.1007/s13205-021-03102-1",
+  "keywords": [
+    "Breast cancer",
+    "Cannabinoids",
+    "Cannabis extract",
+    "Combination therapy"
+  ],
+  "mesh_terms": [],
+  "url": "https://pubmed.ncbi.nlm.nih.gov/35127309/",
+  "relevance_score": 0.5258426966292136,
+  "formulation_relevance": {
+    "indicators": {
+      "extraction_methods": 0,
+      "stability_testing": 0,
+      "analytical_methods": 0,
+      "pharmaceutical_aspects": 0
+    },
+    "total_indicators": 0,
+    "relevance_level": "low"
+  },
+  "cannabis_relevance": {
+    "indicators": {
+      "cannabinoids": 4,
+      "terpenes": 0,
+      "cannabis_plant": 4
+    },
+    "total_indicators": 8,
+    "relevance_level": "high"
+  },
+  "extracted_entities": {
+    "cannabinoids": [
+      "THC",
+      "CBD"
+    ],
+    "terpenes": [],
+    "extraction_methods": [],
+    "analytical_methods": [],
+    "dosage_forms": []
+  },
+  "key_phrases": [],
+  "processing_stage": "metadata_abstract",
+  "processed_at": "2025-10-09T17:15:59.676611"
+}

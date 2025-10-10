@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PubMed File Browser - Formulation Research</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .breadcrumb {
+            padding: 15px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .file-list {
+            padding: 30px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .file-item:hover {
+            background: #f8f9fa;
+        }
+        .file-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+        .file-info {
+            flex: 1;
+        }
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .file-meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .file-actions a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9em;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+        .file-actions a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .directory {
+            color: #fd7e14;
+        }
+        .file {
+            color: #6c757d;
+        }
+        .json {
+            color: #28a745;
+        }
+        .txt {
+            color: #17a2b8;
+        }
+        .pdf {
+            color: #dc3545;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PubMed File Browser</h1>
+            <p>Browse the collected cannabis formulation research data</p>
+        </div>
+        
+        <div class="breadcrumb">
+            <a href="../">← Back to Status</a> / 
+            <a href="./">PubMed Data</a> / 
+            <span id="current-path">articles/</span>
+        </div>
+        
+        <div class="file-list" id="file-list">
+            <div class="loading">Loading file structure...</div>
+        </div>
+    </div>
+
+    <script>
+        // Mock file structure (replace with actual API call)
+        const fileStructure = {
+            "articles/": {
+                "39781554/": {
+                    "type": "directory",
+                    "metadata/": {
+                        "type": "directory",
+                        "article.json": {
+                            "type": "file",
+                            "size": "1.4KB",
+                            "modified": "2025-10-09 17:15:59"
+                        }
+                    },
+                    "abstract/": {
+                        "type": "directory",
+                        "content.txt": {
+                            "type": "file",
+                            "size": "266B",
+                            "modified": "2025-10-09 17:15:59"
+                        }
+                    }
+                },
+                "35950052/": {
+                    "type": "directory",
+                    "metadata/": {
+                        "type": "directory",
+                        "article.json": {
+                            "type": "file",
+                            "size": "1.2KB",
+                            "modified": "2025-10-09 17:15:58"
+                        }
+                    },
+                    "abstract/": {
+                        "type": "directory",
+                        "content.txt": {
+                            "type": "file",
+                            "size": "245B",
+                            "modified": "2025-10-09 17:15:58"
+                        }
+                    }
+                },
+                "35127309/": {
+                    "type": "directory",
+                    "metadata/": {
+                        "type": "directory",
+                        "article.json": {
+                            "type": "file",
+                            "size": "1.3KB",
+                            "modified": "2025-10-09 17:15:57"
+                        }
+                    },
+                    "abstract/": {
+                        "type": "directory",
+                        "content.txt": {
+                            "type": "file",
+                            "size": "278B",
+                            "modified": "2025-10-09 17:15:57"
+                        }
+                    }
+                },
+                "34921662/": {
+                    "type": "directory",
+                    "metadata/": {
+                        "type": "directory",
+                        "article.json": {
+                            "type": "file",
+                            "size": "1.1KB",
+                            "modified": "2025-10-09 17:15:56"
+                        }
+                    },
+                    "abstract/": {
+                        "type": "directory",
+                        "content.txt": {
+                            "type": "file",
+                            "size": "234B",
+                            "modified": "2025-10-09 17:15:56"
+                        }
+                    }
+                }
+            }
+        };
+        
+        function getFileIcon(name, type) {
+            if (type === 'directory') {
+                return '📁';
+            }
+            const ext = name.split('.').pop().toLowerCase();
+            switch (ext) {
+                case 'json': return '📄';
+                case 'txt': return '📝';
+                case 'pdf': return '📕';
+                case 'html': return '🌐';
+                case 'xml': return '📋';
+                default: return '📄';
+            }
+        }
+        
+        function getFileClass(name, type) {
+            if (type === 'directory') {
+                return 'directory';
+            }
+            const ext = name.split('.').pop().toLowerCase();
+            switch (ext) {
+                case 'json': return 'json';
+                case 'txt': return 'txt';
+                case 'pdf': return 'pdf';
+                default: return 'file';
+            }
+        }
+        
+        function browseDirectory(path) {
+            const container = document.getElementById('file-list');
+            const pathParts = path.split('/').filter(p => p);
+            let current = fileStructure;
+            
+            // Navigate to the current directory
+            for (const part of pathParts) {
+                if (current[part + '/']) {
+                    current = current[part + '/'];
+                } else {
+                    container.innerHTML = '<div class="error">Directory not found</div>';
+                    return;
+                }
+            }
+            
+            // Update breadcrumb
+            document.getElementById('current-path').textContent = path;
+            
+            // Display files and directories
+            const items = Object.keys(current).sort((a, b) => {
+                // Directories first, then files
+                const aIsDir = current[a].type === 'directory';
+                const bIsDir = current[b].type === 'directory';
+                if (aIsDir && !bIsDir) return -1;
+                if (!aIsDir && bIsDir) return 1;
+                return a.localeCompare(b);
+            });
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="loading">Empty directory</div>';
+                return;
+            }
+            
+            const html = items.map(item => {
+                const info = current[item];
+                const isDir = info.type === 'directory';
+                const icon = getFileIcon(item, info.type);
+                const fileClass = getFileClass(item, info.type);
+                
+                return `
+                    <div class="file-item">
+                        <div class="file-icon ${fileClass}">${icon}</div>
+                        <div class="file-info">
+                            <div class="file-name">${item}</div>
+                            <div class="file-meta">
+                                ${isDir ? 'Directory' : `File • ${info.size || 'Unknown size'} • ${info.modified || 'Unknown date'}`}
+                            </div>
+                        </div>
+                        <div class="file-actions">
+                            ${isDir ? 
+                                `<a href="#" onclick="browseDirectory('${path}${item}')">Open</a>` :
+                                `<a href="../../pubmed/${path}${item}" target="_blank">View</a>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = html;
+        }
+        
+        // Initialize with root directory
+        document.addEventListener('DOMContentLoaded', () => {
+            browseDirectory('articles/');
+        });
+    </script>
+</body>
+</html>
