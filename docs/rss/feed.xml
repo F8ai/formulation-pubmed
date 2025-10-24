@@ -5,7 +5,7 @@
     <description>Latest cannabis formulation research articles from PubMed</description>
     <link>https://f8ai.github.io/formulation-pubmed/</link>
     <language>en-us</language>
-    <lastBuildDate>Fri, 10 Oct 2025 19:28:07 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 23 Oct 2025 20:03:28 GMT</lastBuildDate>
     <generator>Formulation PubMed Scraper</generator>
     <atom:link href="https://f8ai.github.io/formulation-pubmed/" rel="self" type="application/rss+xml"/>
     <item>
@@ -13,7 +13,7 @@
       <link>https://pubmed.ncbi.nlm.nih.gov/34921662/</link>
       <description/>
       <guid isPermaLink="false">pmid:34921662</guid>
-      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <pubDate>Fri, 10 Oct 2025 19:28:11 GMT</pubDate>
       <author>Bonomo, Yvonne et al.</author>
       <relevanceScore>0.5723809523809524</relevanceScore>
     </item>
@@ -22,7 +22,7 @@
       <link>https://pubmed.ncbi.nlm.nih.gov/39781554/</link>
       <description/>
       <guid isPermaLink="false">pmid:39781554</guid>
-      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <pubDate>Fri, 10 Oct 2025 19:28:11 GMT</pubDate>
       <author>Giangregorio, Aidan et al.</author>
       <relevanceScore>0.34444444444444444</relevanceScore>
     </item>
@@ -31,7 +31,7 @@
       <link>https://pubmed.ncbi.nlm.nih.gov/35127309/</link>
       <description/>
       <guid isPermaLink="false">pmid:35127309</guid>
-      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <pubDate>Fri, 10 Oct 2025 19:28:11 GMT</pubDate>
       <author>Schoeman, Recardia et al.</author>
       <relevanceScore>0.5258426966292136</relevanceScore>
     </item>
@@ -40,7 +40,7 @@
       <link>https://pubmed.ncbi.nlm.nih.gov/35950052/</link>
       <description/>
       <guid isPermaLink="false">pmid:35950052</guid>
-      <pubDate>Thu, 09 Oct 2025 17:15:59 GMT</pubDate>
+      <pubDate>Fri, 10 Oct 2025 19:28:11 GMT</pubDate>
       <author>Abelev, Sarah et al.</author>
       <relevanceScore>0.48287841191067</relevanceScore>
     </item>
